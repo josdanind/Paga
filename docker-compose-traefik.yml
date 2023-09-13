@@ -1,0 +1,17 @@
+version: '3.11.4'
+
+services:
+  traefik:
+    image: traefik:v2.10.4
+    ports:
+      - "80:80"
+    volumes:
+      # Se requiere para podernos comunicar con Docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./services/traefik/traefik.dev.toml:/etc/traefik/traefik.toml
+    networks:
+      - paga-bot
+
+networks:
+  paga-bot:
+    external: true

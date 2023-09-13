@@ -1,0 +1,6 @@
+00_notes
+.mypy_cache
+venv
+__pycache__
+*.pyc
+.vscode

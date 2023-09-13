@@ -1,7 +1,12 @@
+# Habilita Docker en Traefik, así Traefik puede leer
+# las etiquetas de los otros servicios.
 [providers]
     [providers.docker]
+        # No expone todo los servicios de Docker,
+        # solo los expuestos explícitamente
         exposedByDefault = false
 
 [entryPoints]
-    [entryPoints.web]
+    # Crea un entrypoint "http" que escucha el puerto 80
+    [entryPoints.http]
         address = ":80"

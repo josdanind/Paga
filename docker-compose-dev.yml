@@ -1,15 +1,6 @@
 version: '3.11.4'
 
 services:
-  traefik:
-    image: traefik:v2.10.4
-    container_name: traefik-dev
-    ports:
-      - "80:80"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./services/traefik/traefik.dev.toml:/etc/traefik/traefik.toml
-
   paga_bot_dev:
     container_name: paga_bot_dev
     build:
@@ -17,17 +8,24 @@ services:
       dockerfile: Dockerfile.dev
     command: [ "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "${BOT_PORT}", "--reload"]
     restart: always
-    expose:
-      - "${BOT_PORT}"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.paga_bot.rule=Host(`${BOT_DOMAIN_DEV}`)"
       - "traefik.http.services.paga_bot.loadbalancer.server.port=${BOT_PORT}"
+      - "traefik.http.routers.paga_bot_http.entrypoints=http"
+      - "traefik.http.routers.paga_bot_http.rule=Host(`${BOT_DOMAIN_DEV}`)"
+      - "traefik.docker.network=paga-bot"
     volumes:
       - ./services/paga_bot:/bot
     environment:
+      - TZ=America/Bogota
       - DEVELOPMENT_MODE=true
       - BOT_DOMAIN=${BOT_DOMAIN_DEV}
       - BOT_PORT=${BOT_PORT}
       - BOT_TOKEN=${BOT_TOKEN}
       - NGROK_TOKEN=${NGROK_TOKEN}
+    networks:
+      - paga-bot
+
+networks:
+  paga-bot:
+    external: true
