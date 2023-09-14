@@ -8,13 +8,9 @@ services:
     volumes:
       # Se requiere para podernos comunicar con Docker
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./services/traefik/traefik.toml:/etc/traefik/traefik.toml
-      - traefik-public-certificates:/certificates
+      - ./services/traefik/traefik.dev.toml:/etc/traefik/traefik.toml
     networks:
       - paga-bot
-
-volumes:
-  traefik-public-certificates:
 
 networks:
   paga-bot:

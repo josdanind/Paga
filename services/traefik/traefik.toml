@@ -3,15 +3,14 @@
         exposedByDefault = false
 
 [entryPoints]
-    [entryPoints.web]
+    [entryPoints.http]
         address = ":80"
-    [entryPoints.websecure]
+    [entryPoints.https]
         address = ":443"
 
 [certificatesResolvers]
     [certificatesResolvers.letsencrypt]
         [certificatesResolvers.letsencrypt.acme]
             email = "josdanind@proton.me"
-            storage= "acme.json"
-            [certificatesResolvers.letsencrypt.acme.httpChallenge]
-                entryPoint = "web"
+            storage= "/certificates/acme.json"
+            [certificatesResolvers.myresolver.acme.tlsChallenge]

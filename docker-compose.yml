@@ -1,0 +1,42 @@
+version: '3.11.4'
+
+services:
+  paga_bot:
+    container_name: paga_bot
+    build:
+      context: ./services/paga_bot
+    command: [ "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "${BOT_PORT}"]
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=paga-bot"
+      - "traefik.http.services.paga_bot.loadbalancer.server.port=${BOT_PORT}"
+      # Hace que traefik use el dominio con HTTP
+      - "traefik.http.routers.paga_bot-http.entrypoints=http"
+      - "traefik.http.routers.paga_bot-http.rule=Host(`${BOT_DOMAIN}`)"
+      # Hace que traefik use el dominio con HTTPS
+      - "traefik.http.routers.paga_bot-https.entrypoints=https"
+      - "traefik.http.routers.paga_bot-https.rule=Host(`${BOT_DOMAIN}`)"
+      - "traefik.http.routers.paga_bot-https.tls=true"
+      # Usa la configuracion "letsencrypt" para la generacion de los certificados
+      - "traefik.http.routers.paga_bot-https.tls.certresolver=letsencrypt"
+      # Crea el middleware https-redirect para redireccionar HTTP to HTTPS
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.permanent=true"
+      # Usa el middleware para redireccionar HTTP a HTTPS
+      - "traefik.http.routers.paga_bot-http.middlewares=https-redirect"
+    volumes:
+      - ./services/paga_bot:/bot
+    environment:
+      - TZ=America/Bogota
+      - DEVELOPMENT_MODE=true
+      - BOT_DOMAIN=${BOT_DOMAIN_DEV}
+      - BOT_PORT=${BOT_PORT}
+      - BOT_TOKEN=${BOT_TOKEN}
+      - NGROK_TOKEN=${NGROK_TOKEN}
+    networks:
+      - paga-bot
+
+networks:
+  paga-bot:
+    external: true

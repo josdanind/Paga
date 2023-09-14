@@ -10,10 +10,10 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.paga_bot.loadbalancer.server.port=${BOT_PORT}"
-      - "traefik.http.routers.paga_bot_http.entrypoints=http"
-      - "traefik.http.routers.paga_bot_http.rule=Host(`${BOT_DOMAIN_DEV}`)"
       - "traefik.docker.network=paga-bot"
+      - "traefik.http.routers.paga_bot_http.entrypoints=http"
+      - "traefik.http.services.paga_bot.loadbalancer.server.port=${BOT_PORT}"
+      - "traefik.http.routers.paga_bot_http.rule=Host(`${BOT_DOMAIN_DEV}`)"
     volumes:
       - ./services/paga_bot:/bot
     environment:
