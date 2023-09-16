@@ -10,3 +10,8 @@
     # Crea un entrypoint "http" que escucha el puerto 80
     [entryPoints.http]
         address = ":80"
+
+# Configuración del panel de control
+[api]
+  dashboard = true
+  insecure = true

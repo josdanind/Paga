@@ -5,6 +5,14 @@ services:
     image: traefik:v2.10.4
     ports:
       - "80:80"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=paga-bot"
+      - "traefik.http.services.traefik-dashboard-http.loadbalancer.server.port=8080"
+      - "traefik.http.routers.traefik-dashboard-http.entrypoints=http"
+      - "traefik.http.routers.traefik-dashboard-http.rule=Host(`${TRAEFIK_DOMAIN_DEV}`)"
+      # utilice el servicio especial "traefik" api@internal con la interfaz de usuario web/dashboard
+      - "traefik.http.routers.traefik-dashboard-http.service=api@internal"
     volumes:
       # Se requiere para podernos comunicar con Docker
       - /var/run/docker.sock:/var/run/docker.sock
